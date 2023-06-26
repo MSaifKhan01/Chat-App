@@ -3,6 +3,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const { userModel } = require('../model/user.model');
 const bcrypt = require("bcrypt")
+const main=require("../nodemail")
 const userRouter = express.Router()
 
 userRouter.get("/homepage", async (req, res) => {
@@ -19,6 +20,7 @@ userRouter.post("/register", async (req, res) => {
             bcrypt.hash(password, 5, async (err, hash) => {
                 const user = new userModel({ name,email,  password: hash,isVerified })
                 await user.save()
+                main(user.email)
                 res.status(200).send({ "msg": "registration done succesfully" })
             })
         }else{
